@@ -1,0 +1,3 @@
+/static
+.env
+.docker_build/
