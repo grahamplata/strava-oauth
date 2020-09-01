@@ -1,0 +1,7 @@
+{
+  "name": "GO Strava Oauth Example",
+  "description": "Go Strava Oauth Helper",
+  "keywords": ["golang", "go", "strava", "oauth"],
+  "website": "https://github.com/grahamplata/strava-oauth",
+  "repository": "https://github.com/grahamplata/strava-oauth"
+}
