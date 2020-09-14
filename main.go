@@ -146,25 +146,25 @@ func main() {
 			fmt.Println(err)
 		}
 
+		// Render login_error template
 		if len(oathResp.Errors) > 0 {
-			// Render login_error template
 			return c.Render("login_error", fiber.Map{
 				"Title":    "Authorization Failure",
 				"Code":     oathResp.Errors[0].Code,
 				"Resource": oathResp.Errors[0].Resource,
 				"Field":    oathResp.Errors[0].Field,
 			}, "layout/main")
-		} else {
-			// Render login_results template
-			return c.Render("login_results", fiber.Map{
-				"Title":        "Authorization Success",
-				"Athlete":      oathResp.Athlete,
-				"ExpiresAt":    oathResp.ExpiresAt,
-				"ExpiresIn":    oathResp.ExpriresIn,
-				"AccessToken":  oathResp.AccessToken,
-				"RefreshToken": oathResp.RefreshToken,
-			}, "layout/main")
 		}
+
+		// Render login_results template
+		return c.Render("login_results", fiber.Map{
+			"Title":        "Authorization Success",
+			"Athlete":      oathResp.Athlete,
+			"ExpiresAt":    oathResp.ExpiresAt,
+			"ExpiresIn":    oathResp.ExpriresIn,
+			"AccessToken":  oathResp.AccessToken,
+			"RefreshToken": oathResp.RefreshToken,
+		}, "layout/main")
 	})
 
 	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
