@@ -94,13 +94,7 @@ func main() {
 	})
 
 	// Default middleware config
-	// app.Use(logger.New())
-	app.Use(logger.New(logger.Config{
-		Format:     "${pid} ${status} - ${method} ${path}\n",
-		TimeFormat: "02-Jan-2006",
-		TimeZone:   "America/New_York",
-		Output:     os.Stdout,
-	}))
+	app.Use(logger.New())
 
 	// index
 	app.Get("/", func(c *fiber.Ctx) error {
