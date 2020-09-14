@@ -8,7 +8,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html"
 	"github.com/joho/godotenv"
 )
@@ -87,15 +88,22 @@ func init() {
 func main() {
 	// Initialize standard Go html template engine
 	engine := html.New("./views", ".html")
-	engine.Reload(true)
-	engine.Debug(true)
 
-	app := fiber.New(&fiber.Settings{
+	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
 
+	// Default middleware config
+	// app.Use(logger.New())
+	app.Use(logger.New(logger.Config{
+		Format:     "${pid} ${status} - ${method} ${path}\n",
+		TimeFormat: "02-Jan-2006",
+		TimeZone:   "America/New_York",
+		Output:     os.Stdout,
+	}))
+
 	// index
-	app.Get("/", func(c *fiber.Ctx) {
+	app.Get("/", func(c *fiber.Ctx) error {
 		loginURI := fmt.Sprintf(
 			"%s/authorize?client_id=%s&response_type=code&redirect_uri=%s&approval_prompt=force&scope=%s",
 			StravaBase,
@@ -105,14 +113,14 @@ func main() {
 		)
 
 		// Render index template
-		_ = c.Render("index", fiber.Map{
+		return c.Render("index", fiber.Map{
 			"Title": "Login to Strava",
 			"Login": loginURI,
 		}, "layout/main")
 	})
 
 	// strava-oauth
-	app.Get("/strava-oauth", func(c *fiber.Ctx) {
+	app.Get("/strava-oauth", func(c *fiber.Ctx) error {
 		var oathResp OauthResponse
 
 		// build token url
@@ -140,7 +148,7 @@ func main() {
 
 		if len(oathResp.Errors) > 0 {
 			// Render login_error template
-			_ = c.Render("login_error.html", fiber.Map{
+			return c.Render("login_error", fiber.Map{
 				"Title":    "Authorization Failure",
 				"Code":     oathResp.Errors[0].Code,
 				"Resource": oathResp.Errors[0].Resource,
@@ -148,7 +156,7 @@ func main() {
 			}, "layout/main")
 		} else {
 			// Render login_results template
-			_ = c.Render("login_results", fiber.Map{
+			return c.Render("login_results", fiber.Map{
 				"Title":        "Authorization Success",
 				"Athlete":      oathResp.Athlete,
 				"ExpiresAt":    oathResp.ExpiresAt,
@@ -159,5 +167,6 @@ func main() {
 		}
 	})
 
-	app.Listen(os.Getenv("PORT"))
+	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+	app.Listen(port)
 }
