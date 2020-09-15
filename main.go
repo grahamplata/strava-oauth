@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -26,32 +27,32 @@ type ErrorResponse struct {
 
 // AthleteResponse Struct ...
 type AthleteResponse struct {
-	ID            int    `json:"id"`
-	Username      string `json:"username"`
-	ResourceState int    `json:"resource_state"`
-	FirstName     string `json:"firstname"`
-	LastName      string `json:"lastname"`
-	City          string `json:"city"`
-	State         string `json:"state"`
-	Country       string `json:"country"`
-	Sex           string `json:"sex"`
-	Premium       bool   `json:"premium"`
-	Summit        bool   `json:"summit"`
-	CreatedAt     string `json:"created_at"`
-	UpdatedAt     string `json:"updated_at"`
-	BadgeTypeID   int    `json:"badge_type_id"`
-	ProfileMedium string `json:"profile_medium"`
-	Profile       string `json:"profile"`
-	Friend        int    `json:"friend"`
-	Follower      int    `json:"follower"`
+	ID            int       `json:"id"`
+	Username      string    `json:"username"`
+	ResourceState int       `json:"resource_state"`
+	FirstName     string    `json:"firstname"`
+	LastName      string    `json:"lastname"`
+	City          string    `json:"city"`
+	State         string    `json:"state"`
+	Country       string    `json:"country"`
+	Sex           string    `json:"sex"`
+	Premium       bool      `json:"premium"`
+	Summit        bool      `json:"summit"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	BadgeTypeID   int       `json:"badge_type_id"`
+	ProfileMedium string    `json:"profile_medium"`
+	Profile       string    `json:"profile"`
+	Friend        int       `json:"friend"`
+	Follower      int       `json:"follower"`
 }
 
 // OauthResponse Struct ...
 type OauthResponse struct {
 	Athlete      AthleteResponse `json:"athlete"`
 	TokenType    string          `json:"token_type"`
-	ExpiresAt    int             `json:"expires_at"`
-	ExpriresIn   int             `json:"expires_in"`
+	ExpiresAt    time.Time       `json:"expires_at"`
+	ExpriresIn   time.Time       `json:"expires_in"`
 	RefreshToken string          `json:"refresh_token"`
 	AccessToken  string          `json:"access_token"`
 	Message      string          `json:"message"`
@@ -88,6 +89,8 @@ func init() {
 func main() {
 	// Initialize standard Go html template engine
 	engine := html.New("./views", ".html")
+	engine.Debug(true)
+	engine.Reload(true)
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
@@ -150,6 +153,7 @@ func main() {
 			}, "layout/main")
 		}
 
+		log.Println(oathResp)
 		// Render login_results template
 		return c.Render("login_results", fiber.Map{
 			"Title":        "Authorization Success",
