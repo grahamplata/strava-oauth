@@ -1,11 +1,18 @@
-<div class="results">
+<div class="results" athlete="{{ .Athlete.ID }}">
   <h1>Authorization Results</h1>
-  <p>
-    <pre>Access Token: {{ .AccessToken }}</pre>
-    <pre>Athlete: {{ .Athlete }}</pre>
-    <pre>Expires At: {{ .ExpiresAt }}</pre>
-    <pre>Expires In: {{ .ExpiresIn }}</pre>
-    <pre>Access Token: {{ .AccessToken }}</pre>
-    <pre>Refresh Token: {{ .RefreshToken }}</pre>
-  </p>
+  <div class="card" style="width: 25rem">
+    <img src="{{ .Athlete.ProfileMedium }}" class="card-img-top" alt="..." />
+    <div class="card-body">
+      <h5 class="card-title">
+        {{ .Athlete.FirstName }} {{ .Athlete.LastName }}
+      </h5>
+      <p class="card-text">{{ .Athlete.City }}, {{ .Athlete.State }}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><b>Expires At:</b> {{ .ExpiresAt }}</li>
+      <li class="list-group-item"><b>Expires In:</b> {{ .ExpiresIn }}</li>
+      <li class="list-group-item"><b>Access Token:</b> {{ .AccessToken }}</li>
+      <li class="list-group-item"><b>Refresh Token:</b> {{ .RefreshToken }}</li>
+    </ul>
+  </div>
 </div>
